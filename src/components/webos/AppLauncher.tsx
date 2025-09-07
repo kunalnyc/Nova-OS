@@ -24,6 +24,7 @@ import { TextEditor } from "./apps/TextEditor";
 import { Browser } from "./apps/Browser";
 import { SettingsApp } from "./apps/SettingsApp";
 import { CalendarApp } from "./apps/CalendarApp";
+import { Calculator as CalculatorApp } from "./apps/Calculator";
 
 interface AppLauncherProps {
   onClose: () => void;
@@ -71,7 +72,7 @@ const allApps = [
     id: "calculator",
     name: "Calculator",
     icon: Calculator,
-    component: () => <div className="p-4">Calculator App Coming Soon...</div>,
+    component: CalculatorApp,
     category: "Utilities",
   },
   {
