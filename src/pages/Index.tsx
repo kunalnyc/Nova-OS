@@ -1,7 +1,7 @@
-import { WebOS } from "@/components/WebOS";
+import { NovaOS } from "@/components/NovaOS";
 
 const Index = () => {
-  return <WebOS />;
+  return <NovaOS />;
 };
 
 export default Index;

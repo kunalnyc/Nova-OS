@@ -6,7 +6,7 @@ import { Taskbar } from "./webos/Taskbar";
 import { NotificationCenter } from "./webos/NotificationCenter";
 import { Window } from "./webos/types";
 
-export const WebOS = () => {
+export const NovaOS = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [windows, setWindows] = useState<Window[]>([]);
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
@@ -14,7 +14,7 @@ export const WebOS = () => {
   const [notifications, setNotifications] = useState([
     {
       id: "1",
-      title: "Welcome to WebOS",
+      title: "Welcome to NovaOS",
       message: "Your modern web operating system is ready!",
       time: new Date().toLocaleTimeString(),
       type: "info" as const,
@@ -24,6 +24,14 @@ export const WebOS = () => {
   // Simulate login process
   const handleLogin = () => {
     setIsLoggedIn(true);
+  };
+
+  // Shutdown process
+  const handleShutdown = () => {
+    setIsLoggedIn(false);
+    setWindows([]);
+    setActiveWindowId(null);
+    setShowNotifications(false);
   };
 
   // Window management
@@ -126,6 +134,7 @@ export const WebOS = () => {
         onFocusWindow={focusWindow}
         onToggleNotifications={() => setShowNotifications(!showNotifications)}
         hasNotifications={notifications.length > 0}
+        onShutdown={handleShutdown}
       />
       
       {showNotifications && (

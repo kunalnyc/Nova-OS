@@ -26,15 +26,15 @@ interface Tab {
 
 export const Browser = () => {
   const [tabs, setTabs] = useState<Tab[]>([
-    { id: '1', title: 'WebOS Browser', url: 'https://webos.local/', isActive: true }
+    { id: '1', title: 'NovaOS Browser', url: 'https://novados.local/', isActive: true }
   ]);
-  const [addressBar, setAddressBar] = useState('https://webos.local/');
+  const [addressBar, setAddressBar] = useState('https://novados.local/');
 
   const addNewTab = () => {
     const newTab: Tab = {
       id: Date.now().toString(),
       title: 'New Tab',
-      url: 'https://webos.local/new-tab',
+      url: 'https://novados.local/new-tab',
       isActive: true
     };
     
@@ -189,7 +189,7 @@ export const Browser = () => {
               <Globe className="w-10 h-10 text-primary" />
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-4">
-              Welcome to WebOS Browser
+              Welcome to NovaOS Browser
             </h1>
             <p className="text-muted-foreground text-lg">
               Your secure, fast, and modern web browser
@@ -223,9 +223,9 @@ export const Browser = () => {
             </h2>
             <div className="grid grid-cols-3 gap-4">
               {[
-                { name: 'WebOS Dashboard', url: 'webos.local/dashboard' },
-                { name: 'System Settings', url: 'webos.local/settings' },
-                { name: 'File Manager', url: 'webos.local/files' },
+                { name: 'NovaOS Dashboard', url: 'novados.local/dashboard' },
+                { name: 'System Settings', url: 'novados.local/settings' },
+                { name: 'File Manager', url: 'novados.local/files' },
               ].map((site, index) => (
                 <div
                   key={index}

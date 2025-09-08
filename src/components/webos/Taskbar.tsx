@@ -12,7 +12,8 @@ import {
   Folder,
   FileText,
   Globe,
-  Monitor
+  Monitor,
+  Power
 } from "lucide-react";
 import { Window } from "./types";
 import { AppLauncher } from "./AppLauncher";
@@ -23,6 +24,7 @@ interface TaskbarProps {
   onFocusWindow: (id: string) => void;
   onToggleNotifications: () => void;
   hasNotifications: boolean;
+  onShutdown?: () => void;
 }
 
 export const Taskbar = ({
@@ -31,6 +33,7 @@ export const Taskbar = ({
   onFocusWindow,
   onToggleNotifications,
   hasNotifications,
+  onShutdown,
 }: TaskbarProps) => {
   const [showAppLauncher, setShowAppLauncher] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -63,6 +66,7 @@ export const Taskbar = ({
             onOpenApp(app, title, content);
             setShowAppLauncher(false);
           }}
+          onShutdown={onShutdown}
         />
       )}
 
@@ -159,6 +163,16 @@ export const Taskbar = ({
                 {hasNotifications && (
                   <div className="absolute top-1 right-1 w-2 h-2 bg-warning rounded-full" />
                 )}
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-8 h-8 p-0 hover:bg-red-500/20 hover:text-red-500 transition-smooth"
+                onClick={onShutdown}
+                title="Shutdown NovaOS"
+              >
+                <Power className="w-4 h-4 text-muted-foreground hover:text-red-500" />
               </Button>
             </div>
 

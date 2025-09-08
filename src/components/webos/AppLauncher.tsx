@@ -17,7 +17,7 @@ import {
   Clock,
   Gamepad2,
   Code,
-  Terminal
+  Terminal as TerminalIcon
 } from "lucide-react";
 import { FileManager } from "./apps/FileManager";
 import { TextEditor } from "./apps/TextEditor";
@@ -25,10 +25,12 @@ import { Browser } from "./apps/Browser";
 import { SettingsApp } from "./apps/SettingsApp";
 import { CalendarApp } from "./apps/CalendarApp";
 import { Calculator as CalculatorApp } from "./apps/Calculator";
+import { Terminal } from "./apps/Terminal";
 
 interface AppLauncherProps {
   onClose: () => void;
   onOpenApp: (app: string, title: string, content: React.ReactNode) => void;
+  onShutdown?: () => void;
 }
 
 const allApps = [
@@ -106,9 +108,9 @@ const allApps = [
   {
     id: "terminal",
     name: "Terminal",
-    icon: Terminal,
-    component: () => <div className="p-4 font-mono">Terminal Coming Soon...</div>,
-    category: "Development",
+    icon: TerminalIcon,
+    component: Terminal,
+    category: "System",
   },
   {
     id: "code",
@@ -121,7 +123,7 @@ const allApps = [
 
 const categories = ["All", "System", "Productivity", "Internet", "Media", "Utilities", "Development"];
 
-export const AppLauncher = ({ onClose, onOpenApp }: AppLauncherProps) => {
+export const AppLauncher = ({ onClose, onOpenApp, onShutdown }: AppLauncherProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -132,7 +134,11 @@ export const AppLauncher = ({ onClose, onOpenApp }: AppLauncherProps) => {
   });
 
   const handleAppClick = (app: typeof allApps[0]) => {
-    onOpenApp(app.id, app.name, <app.component />);
+    if (app.id === 'terminal') {
+      onOpenApp(app.id, app.name, <Terminal onShutdown={onShutdown} />);
+    } else {
+      onOpenApp(app.id, app.name, <app.component />);
+    }
   };
 
   return (

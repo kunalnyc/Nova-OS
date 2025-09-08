@@ -48,7 +48,7 @@ export const LoginScreen = ({ onLogin }: LoginScreenProps) => {
             <div className="w-20 h-20 mx-auto mb-4 glass rounded-full flex items-center justify-center">
               <User className="w-10 h-10 text-primary" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground mb-2">Welcome to WebOS</h1>
+            <h1 className="text-2xl font-bold text-foreground mb-2">Welcome to NovaOS</h1>
             <p className="text-muted-foreground">Your modern web operating system</p>
           </div>
 
@@ -119,7 +119,7 @@ export const LoginScreen = ({ onLogin }: LoginScreenProps) => {
 
       {/* Bottom Info */}
       <div className="absolute bottom-8 left-8 text-foreground/80">
-        <p className="text-sm">WebOS v1.0</p>
+        <p className="text-sm">NovaOS v1.0</p>
         <p className="text-xs text-muted-foreground">Modern Web Operating System</p>
       </div>
 
