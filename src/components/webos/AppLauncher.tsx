@@ -26,6 +26,7 @@ import { SettingsApp } from "./apps/SettingsApp";
 import { CalendarApp } from "./apps/CalendarApp";
 import { Calculator as CalculatorApp } from "./apps/Calculator";
 import { Terminal } from "./apps/Terminal";
+import { PhotoGallery } from "./apps/PhotoGallery";
 
 interface AppLauncherProps {
   onClose: () => void;
@@ -95,7 +96,7 @@ const allApps = [
     id: "photos",
     name: "Photos",
     icon: Image,
-    component: () => <div className="p-4">Photo Gallery Coming Soon...</div>,
+    component: PhotoGallery,
     category: "Media",
   },
   {
