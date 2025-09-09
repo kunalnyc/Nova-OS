@@ -8,13 +8,13 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Core WebOS Colors */
+    /* Dark Mode (Default) - WebOS Colors */
     --background: 220 25% 6%;
     --foreground: 210 40% 98%;
     --surface: 220 20% 8%;
     --surface-variant: 220 15% 10%;
 
-    /* Glass Effects */
+    /* Glass Effects - Dark */
     --glass-bg: 220 25% 12%;
     --glass-border: 220 30% 20%;
     --glass-shadow: 220 50% 2%;
@@ -41,7 +41,7 @@ All colors MUST be HSL.
     --destructive: 0 70% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    /* UI Elements */
+    /* UI Elements - Dark */
     --muted: 220 15% 15%;
     --muted-foreground: 220 10% 60%;
     --card: 220 20% 8%;
@@ -52,7 +52,7 @@ All colors MUST be HSL.
     --input: 220 20% 12%;
     --ring: 212 100% 60%;
 
-    /* Shadows & Effects */
+    /* Shadows & Effects - Dark */
     --shadow-glass: 0 8px 32px hsla(220, 50%, 2%, 0.4);
     --shadow-neumorphic: 
       8px 8px 16px hsla(220, 50%, 2%, 0.4),
@@ -61,7 +61,7 @@ All colors MUST be HSL.
       inset 2px 2px 4px hsla(220, 50%, 2%, 0.3),
       inset -2px -2px 4px hsla(220, 30%, 20%, 0.1);
 
-    /* Gradients */
+    /* Gradients - Dark */
     --gradient-primary: linear-gradient(135deg, hsl(212, 100%, 60%), hsl(260, 70%, 55%));
     --gradient-surface: linear-gradient(145deg, hsl(220, 25%, 8%), hsl(220, 20%, 6%));
     --gradient-glass: linear-gradient(145deg, 
@@ -75,6 +75,69 @@ All colors MUST be HSL.
     --radius: 12px;
     --radius-lg: 16px;
     --radius-xl: 20px;
+  }
+
+  /* Light Mode */
+  [data-theme="light"] {
+    /* Core Colors - Light */
+    --background: 210 30% 96%;
+    --foreground: 220 25% 15%;
+    --surface: 210 20% 92%;
+    --surface-variant: 210 15% 88%;
+
+    /* Glass Effects - Light */
+    --glass-bg: 210 30% 88%;
+    --glass-border: 210 20% 75%;
+    --glass-shadow: 220 20% 80%;
+
+    /* Primary - Electric Blue (adjusted for light mode) */
+    --primary: 212 100% 50%;
+    --primary-foreground: 210 30% 98%;
+    --primary-glow: 212 100% 60%;
+    --primary-soft: 212 80% 85%;
+
+    /* Secondary - Deep Purple (adjusted for light mode) */
+    --secondary: 260 70% 45%;
+    --secondary-foreground: 210 30% 98%;
+    --secondary-soft: 260 50% 85%;
+
+    /* Accent - Cyan (adjusted for light mode) */
+    --accent: 185 100% 40%;
+    --accent-foreground: 210 30% 96%;
+    --accent-soft: 185 80% 85%;
+
+    /* System Colors - Light (unchanged as they work well in both modes) */
+    --success: 142 70% 45%;
+    --warning: 38 100% 50%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 210 30% 98%;
+
+    /* UI Elements - Light */
+    --muted: 210 20% 85%;
+    --muted-foreground: 220 15% 40%;
+    --card: 210 20% 92%;
+    --card-foreground: 220 25% 15%;
+    --popover: 210 30% 94%;
+    --popover-foreground: 220 25% 15%;
+    --border: 210 20% 75%;
+    --input: 210 20% 88%;
+    --ring: 212 100% 50%;
+
+    /* Shadows & Effects - Light */
+    --shadow-glass: 0 8px 32px hsla(220, 20%, 60%, 0.15);
+    --shadow-neumorphic: 
+      8px 8px 16px hsla(220, 20%, 60%, 0.15),
+      -8px -8px 16px hsla(220, 20%, 100%, 0.8);
+    --shadow-inset: 
+      inset 2px 2px 4px hsla(220, 20%, 60%, 0.1),
+      inset -2px -2px 4px hsla(220, 20%, 100%, 0.8);
+
+    /* Gradients - Light */
+    --gradient-primary: linear-gradient(135deg, hsl(212, 100%, 50%), hsl(260, 70%, 45%));
+    --gradient-surface: linear-gradient(145deg, hsl(210, 20%, 92%), hsl(210, 30%, 96%));
+    --gradient-glass: linear-gradient(145deg, 
+      hsla(210, 30%, 88%, 0.8), 
+      hsla(210, 20%, 92%, 0.6));
   }
 }
 

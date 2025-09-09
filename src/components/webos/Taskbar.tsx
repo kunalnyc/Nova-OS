@@ -13,10 +13,13 @@ import {
   FileText,
   Globe,
   Monitor,
-  Power
+  Power,
+  Sun,
+  Moon
 } from "lucide-react";
 import { Window } from "./types";
 import { AppLauncher } from "./AppLauncher";
+import { useTheme } from "@/hooks/use-theme";
 
 interface TaskbarProps {
   windows: Window[];
@@ -37,6 +40,7 @@ export const Taskbar = ({
 }: TaskbarProps) => {
   const [showAppLauncher, setShowAppLauncher] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -127,6 +131,21 @@ export const Taskbar = ({
           <div className="flex items-center space-x-2">
             {/* System Icons */}
             <div className="flex items-center space-x-1">
+              {/* Theme Toggle */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-8 h-8 p-0 hover:bg-white/10 transition-smooth"
+                onClick={toggleTheme}
+                title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              >
+                {theme === 'dark' ? (
+                  <Sun className="w-4 h-4 text-warning" />
+                ) : (
+                  <Moon className="w-4 h-4 text-primary" />
+                )}
+              </Button>
+
               <Button
                 variant="ghost"
                 size="sm"
