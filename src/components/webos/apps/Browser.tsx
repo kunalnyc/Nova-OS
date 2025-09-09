@@ -31,7 +31,8 @@ export const Browser = () => {
   const [addressBar, setAddressBar] = useState('https://novados.local/');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'home' | 'search' | 'loading'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'search' | 'loading' | 'website'>('home');
+  const [currentWebsite, setCurrentWebsite] = useState<any>(null);
 
   const addNewTab = () => {
     const newTab: Tab = {
@@ -122,6 +123,30 @@ export const Browser = () => {
           favicon: "📰"
         }
       );
+    } else if (searchTerm.includes('image') || searchTerm.includes('photo') || searchTerm.includes('picture')) {
+      results.push(
+        {
+          title: "Unsplash - Beautiful Free Images & Pictures",
+          url: "https://unsplash.com",
+          description: "Beautiful, free images gifted by the world's most generous community of photographers.",
+          favicon: "📸",
+          type: "image-site"
+        },
+        {
+          title: "Pexels - Free Stock Photos",
+          url: "https://pexels.com", 
+          description: "Find the best free stock images. Download all photos and use them even for commercial projects.",
+          favicon: "🖼️",
+          type: "image-site"
+        },
+        {
+          title: "Pixabay - Stunning Free Images",
+          url: "https://pixabay.com",
+          description: "Stunning free images & royalty free stock. Over 4.2 million+ high quality stock images and videos shared by our talented community.",
+          favicon: "🎨",
+          type: "image-site"
+        }
+      );
     } else {
       // Generic search results
       results.push(
@@ -176,6 +201,85 @@ export const Browser = () => {
     }
   };
 
+  const handleResultClick = (result: any) => {
+    setCurrentWebsite(result);
+    setCurrentPage('website');
+    setAddressBar(result.url);
+    
+    // Update active tab
+    setTabs(prev => prev.map(tab => 
+      tab.isActive 
+        ? { ...tab, url: result.url, title: result.title }
+        : tab
+    ));
+  };
+
+  const renderWebsiteContent = (website: any) => {
+    if (website.type === 'image-site') {
+      const sampleImages = [
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop",
+        "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=300&h=200&fit=crop",
+        "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=300&h=200&fit=crop",
+        "https://images.unsplash.com/photo-1525904097878-94fb15835963?w=300&h=200&fit=crop",
+        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop",
+        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=300&h=200&fit=crop",
+        "https://images.unsplash.com/photo-1542282088-fe8426682b8f?w=300&h=200&fit=crop",
+        "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=300&h=200&fit=crop"
+      ];
+
+      return (
+        <div className="p-6">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-foreground mb-2">{website.title}</h1>
+            <p className="text-muted-foreground">{website.description}</p>
+          </div>
+          
+          <div className="mb-4">
+            <Input
+              placeholder="Search images..."
+              className="glass border-glass-border bg-transparent"
+            />
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {sampleImages.map((imageUrl, index) => (
+              <div key={index} className="group cursor-pointer">
+                <div className="aspect-square overflow-hidden rounded-lg glass">
+                  <img
+                    src={imageUrl}
+                    alt={`Sample image ${index + 1}`}
+                    className="w-full h-full object-cover transition-spring group-hover:scale-110"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // Default website content
+    return (
+      <div className="p-6">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-foreground mb-2">{website.title}</h1>
+          <p className="text-muted-foreground">{website.description}</p>
+        </div>
+        
+        <div className="glass rounded-lg p-6">
+          <h2 className="text-lg font-semibold text-foreground mb-4">Welcome to {website.title}</h2>
+          <p className="text-muted-foreground mb-4">
+            This is a simulated website view. In a real browser, this would load the actual website content.
+          </p>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-success rounded-full"></div>
+            <span className="text-sm text-muted-foreground">Secure connection</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col h-full bg-surface/20">
       {/* Tab Bar */}
@@ -222,16 +326,54 @@ export const Browser = () => {
       <div className="p-3 border-b border-glass-border glass-strong">
         <div className="flex items-center space-x-2">
           {/* Navigation Buttons */}
-          <Button variant="ghost" size="sm">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => {
+              if (currentPage === 'website') {
+                setCurrentPage('search');
+                setCurrentWebsite(null);
+              } else if (currentPage === 'search') {
+                setCurrentPage('home');
+                setSearchResults([]);
+                setAddressBar('https://novados.local/');
+              }
+            }}
+            disabled={currentPage === 'home'}
+          >
             <ArrowLeft className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" disabled>
             <ArrowRight className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="sm">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => {
+              if (currentPage === 'search' && addressBar) {
+                handleNavigate({ preventDefault: () => {} } as React.FormEvent);
+              } else if (currentPage === 'website' && currentWebsite) {
+                setCurrentPage('website');
+              }
+            }}
+          >
             <RotateCcw className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="sm">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => {
+              setCurrentPage('home');
+              setSearchResults([]);
+              setCurrentWebsite(null);
+              setAddressBar('https://novados.local/');
+              setTabs(prev => prev.map(tab => 
+                tab.isActive 
+                  ? { ...tab, url: 'https://novados.local/', title: 'NovaOS Browser' }
+                  : tab
+              ));
+            }}
+          >
             <Home className="w-4 h-4" />
           </Button>
 
@@ -293,7 +435,11 @@ export const Browser = () => {
             </div>
             <div className="space-y-6">
               {searchResults.map((result, index) => (
-                <div key={index} className="cursor-pointer hover:bg-white/5 p-4 rounded-lg transition-smooth">
+                <div 
+                  key={index} 
+                  className="cursor-pointer hover:bg-white/5 p-4 rounded-lg transition-smooth"
+                  onClick={() => handleResultClick(result)}
+                >
                   <div className="flex items-start space-x-3">
                     <div className="text-2xl">{result.favicon}</div>
                     <div className="flex-1">
@@ -309,6 +455,12 @@ export const Browser = () => {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {currentPage === 'website' && currentWebsite && (
+          <div className="h-full overflow-auto">
+            {renderWebsiteContent(currentWebsite)}
           </div>
         )}
 
