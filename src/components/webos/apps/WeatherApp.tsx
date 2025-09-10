@@ -24,40 +24,84 @@ interface WeatherData {
   humidity: number;
   windSpeed: number;
   visibility: number;
+  feelsLike: number;
+  uvIndex: number;
   forecast: Array<{
+    date: string;
     day: string;
     high: number;
     low: number;
     condition: string;
+    icon: string;
   }>;
 }
 
 export const WeatherApp = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("London");
   const [error, setError] = useState<string | null>(null);
 
-  const mockWeatherData: WeatherData = {
-    location: "New York, NY",
-    temperature: 22,
-    condition: "Partly Cloudy",
-    humidity: 65,
-    windSpeed: 12,
-    visibility: 10,
-    forecast: [
-      { day: "Today", high: 24, low: 18, condition: "Partly Cloudy" },
-      { day: "Tomorrow", high: 26, low: 19, condition: "Sunny" },
-      { day: "Wednesday", high: 21, low: 15, condition: "Rainy" },
-      { day: "Thursday", high: 23, low: 17, condition: "Cloudy" },
-      { day: "Friday", high: 25, low: 20, condition: "Sunny" },
-    ]
-  };
-
   useEffect(() => {
-    // Load default weather
-    setWeather(mockWeatherData);
+    // Load default weather for London
+    fetchWeatherData("London");
   }, []);
+
+  const fetchWeatherData = async (city: string) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Using wttr.in API which provides weather data in JSON format without API key
+      const response = await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`);
+      
+      if (!response.ok) {
+        throw new Error('City not found or weather service unavailable');
+      }
+      
+      const data = await response.json();
+      
+      if (!data.current_condition || !data.weather) {
+        throw new Error('Invalid weather data received');
+      }
+
+      const current = data.current_condition[0];
+      const location = data.nearest_area?.[0] || { areaName: [{ value: city }] };
+      
+      const weatherData: WeatherData = {
+        location: `${location.areaName[0].value}${location.country ? `, ${location.country[0].value}` : ''}`,
+        temperature: parseInt(current.temp_C),
+        condition: current.weatherDesc[0].value,
+        humidity: parseInt(current.humidity),
+        windSpeed: parseInt(current.windspeedKmph),
+        visibility: parseInt(current.visibility),
+        feelsLike: parseInt(current.FeelsLikeC),
+        uvIndex: parseInt(current.uvIndex || '0'),
+        forecast: data.weather.slice(0, 5).map((day: any, index: number) => {
+          const date = new Date();
+          date.setDate(date.getDate() + index);
+          
+          return {
+            date: date.toISOString().split('T')[0],
+            day: index === 0 ? 'Today' : 
+                 index === 1 ? 'Tomorrow' : 
+                 date.toLocaleDateString([], { weekday: 'short' }),
+            high: parseInt(day.maxtempC),
+            low: parseInt(day.mintempC),
+            condition: day.hourly[4]?.weatherDesc?.[0]?.value || 'Clear',
+            icon: day.hourly[4]?.weatherCode || '113'
+          };
+        })
+      };
+      
+      setWeather(weatherData);
+    } catch (err) {
+      console.error('Weather fetch error:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch weather data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getWeatherIcon = (condition: string) => {
     const icons: Record<string, any> = {
@@ -73,40 +117,12 @@ export const WeatherApp = () => {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
-    
-    setLoading(true);
-    setError(null);
-    
-    try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock weather data for different cities
-      const mockData = {
-        ...mockWeatherData,
-        location: searchQuery,
-        temperature: Math.floor(Math.random() * 30) + 5,
-        humidity: Math.floor(Math.random() * 40) + 40,
-        windSpeed: Math.floor(Math.random() * 20) + 5,
-      };
-      
-      setWeather(mockData);
-    } catch (err) {
-      setError("Failed to fetch weather data");
-    } finally {
-      setLoading(false);
-    }
+    await fetchWeatherData(searchQuery.trim());
   };
 
   const handleRefresh = () => {
-    if (weather) {
-      const updatedWeather = {
-        ...weather,
-        temperature: Math.floor(Math.random() * 30) + 5,
-        humidity: Math.floor(Math.random() * 40) + 40,
-        windSpeed: Math.floor(Math.random() * 20) + 5,
-      };
-      setWeather(updatedWeather);
+    if (searchQuery) {
+      fetchWeatherData(searchQuery);
     }
   };
 
@@ -191,21 +207,26 @@ export const WeatherApp = () => {
               </div>
               
               {/* Weather Details */}
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-4 gap-3">
                 <div className="text-center glass-strong rounded-lg p-3">
-                  <Droplets className="w-5 h-5 text-primary mx-auto mb-2" />
-                  <div className="text-sm text-muted-foreground">Humidity</div>
-                  <div className="font-semibold">{weather.humidity}%</div>
+                  <Droplets className="w-4 h-4 text-primary mx-auto mb-1" />
+                  <div className="text-xs text-muted-foreground">Humidity</div>
+                  <div className="font-semibold text-sm">{weather.humidity}%</div>
                 </div>
                 <div className="text-center glass-strong rounded-lg p-3">
-                  <Wind className="w-5 h-5 text-primary mx-auto mb-2" />
-                  <div className="text-sm text-muted-foreground">Wind</div>
-                  <div className="font-semibold">{weather.windSpeed} km/h</div>
+                  <Wind className="w-4 h-4 text-primary mx-auto mb-1" />
+                  <div className="text-xs text-muted-foreground">Wind</div>
+                  <div className="font-semibold text-sm">{weather.windSpeed} km/h</div>
                 </div>
                 <div className="text-center glass-strong rounded-lg p-3">
-                  <Eye className="w-5 h-5 text-primary mx-auto mb-2" />
-                  <div className="text-sm text-muted-foreground">Visibility</div>
-                  <div className="font-semibold">{weather.visibility} km</div>
+                  <Eye className="w-4 h-4 text-primary mx-auto mb-1" />
+                  <div className="text-xs text-muted-foreground">Visibility</div>
+                  <div className="font-semibold text-sm">{weather.visibility} km</div>
+                </div>
+                <div className="text-center glass-strong rounded-lg p-3">
+                  <Thermometer className="w-4 h-4 text-primary mx-auto mb-1" />
+                  <div className="text-xs text-muted-foreground">Feels Like</div>
+                  <div className="font-semibold text-sm">{weather.feelsLike}°</div>
                 </div>
               </div>
             </CardContent>

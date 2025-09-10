@@ -303,32 +303,36 @@ export const CodeEditor = () => {
 
           <div className="flex items-center space-x-2">
             {/* Language Selector */}
-            <Select value={language} onValueChange={handleLanguageChange}>
-              <SelectTrigger className="w-32 h-8">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="javascript">JavaScript</SelectItem>
-                <SelectItem value="python">Python</SelectItem>
-                <SelectItem value="html">HTML</SelectItem>
-                <SelectItem value="css">CSS</SelectItem>
-                <SelectItem value="json">JSON</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="relative">
+              <Select value={language} onValueChange={handleLanguageChange}>
+                <SelectTrigger className="w-32 h-8 glass border-glass-border">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="glass-strong border-glass-border">
+                  <SelectItem value="javascript">JavaScript</SelectItem>
+                  <SelectItem value="python">Python</SelectItem>
+                  <SelectItem value="html">HTML</SelectItem>
+                  <SelectItem value="css">CSS</SelectItem>
+                  <SelectItem value="json">JSON</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
             {/* Font Size */}
-            <Select value={fontSize} onValueChange={setFontSize}>
-              <SelectTrigger className="w-16 h-8">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="12">12px</SelectItem>
-                <SelectItem value="14">14px</SelectItem>
-                <SelectItem value="16">16px</SelectItem>
-                <SelectItem value="18">18px</SelectItem>
-                <SelectItem value="20">20px</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="relative">
+              <Select value={fontSize} onValueChange={setFontSize}>
+                <SelectTrigger className="w-16 h-8 glass border-glass-border">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="glass-strong border-glass-border">
+                  <SelectItem value="12">12px</SelectItem>
+                  <SelectItem value="14">14px</SelectItem>
+                  <SelectItem value="16">16px</SelectItem>
+                  <SelectItem value="18">18px</SelectItem>
+                  <SelectItem value="20">20px</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
