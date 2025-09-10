@@ -80,15 +80,15 @@ All colors MUST be HSL.
   /* Light Mode */
   [data-theme="light"] {
     /* Core Colors - Light */
-    --background: 210 30% 96%;
-    --foreground: 220 25% 15%;
-    --surface: 210 20% 92%;
-    --surface-variant: 210 15% 88%;
+    --background: 210 30% 98%;
+    --foreground: 220 30% 8%;
+    --surface: 210 20% 95%;
+    --surface-variant: 210 15% 92%;
 
     /* Glass Effects - Light */
-    --glass-bg: 210 30% 88%;
-    --glass-border: 210 20% 75%;
-    --glass-shadow: 220 20% 80%;
+    --glass-bg: 210 30% 92%;
+    --glass-border: 210 20% 70%;
+    --glass-shadow: 220 20% 75%;
 
     /* Primary - Electric Blue (adjusted for light mode) */
     --primary: 212 100% 50%;
@@ -113,12 +113,12 @@ All colors MUST be HSL.
     --destructive-foreground: 210 30% 98%;
 
     /* UI Elements - Light */
-    --muted: 210 20% 85%;
-    --muted-foreground: 220 15% 40%;
-    --card: 210 20% 92%;
-    --card-foreground: 220 25% 15%;
-    --popover: 210 30% 94%;
-    --popover-foreground: 220 25% 15%;
+    --muted: 210 20% 88%;
+    --muted-foreground: 220 25% 25%;
+    --card: 210 20% 95%;
+    --card-foreground: 220 30% 8%;
+    --popover: 210 30% 96%;
+    --popover-foreground: 220 30% 8%;
     --border: 210 20% 75%;
     --input: 210 20% 88%;
     --ring: 212 100% 50%;

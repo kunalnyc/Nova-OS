@@ -17,7 +17,8 @@ import {
   Clock,
   Gamepad2,
   Code,
-  Terminal as TerminalIcon
+  Terminal as TerminalIcon,
+  CloudSun
 } from "lucide-react";
 import { FileManager } from "./apps/FileManager";
 import { TextEditor } from "./apps/TextEditor";
@@ -27,6 +28,8 @@ import { CalendarApp } from "./apps/CalendarApp";
 import { Calculator as CalculatorApp } from "./apps/Calculator";
 import { Terminal } from "./apps/Terminal";
 import { PhotoGallery } from "./apps/PhotoGallery";
+import { WeatherApp } from "./apps/WeatherApp";
+import { CodeEditor } from "./apps/CodeEditor";
 
 interface AppLauncherProps {
   onClose: () => void;
@@ -117,8 +120,15 @@ const allApps = [
     id: "code",
     name: "Code Editor",
     icon: Code,
-    component: () => <div className="p-4">Code Editor Coming Soon...</div>,
+    component: CodeEditor,
     category: "Development",
+  },
+  {
+    id: "weather",
+    name: "Weather",
+    icon: CloudSun,
+    component: WeatherApp,
+    category: "Utilities",
   },
 ];
 
