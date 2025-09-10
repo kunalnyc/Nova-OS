@@ -5,6 +5,7 @@ import { TextEditor } from "./apps/TextEditor";
 import { Browser } from "./apps/Browser";
 import { SettingsApp } from "./apps/SettingsApp";
 import { CalendarApp } from "./apps/CalendarApp";
+import { ContextMenu } from "./ContextMenu";
 import wallpaper from "@/assets/webos-wallpaper.jpg";
 
 interface DesktopProps {
@@ -46,6 +47,7 @@ const desktopApps = [
 
 export const Desktop = ({ onOpenApp }: DesktopProps) => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -53,6 +55,15 @@ export const Desktop = ({ onOpenApp }: DesktopProps) => {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setContextMenu({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleCloseContextMenu = () => {
+    setContextMenu(null);
+  };
 
   const handleAppDoubleClick = (app: typeof desktopApps[0]) => {
     onOpenApp(app.id, app.name, <app.component />);
@@ -66,6 +77,8 @@ export const Desktop = ({ onOpenApp }: DesktopProps) => {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
+      onContextMenu={handleContextMenu}
+      onClick={handleCloseContextMenu}
     >
       {/* Desktop Icons */}
       <div className="absolute top-8 left-8 grid gap-6">
@@ -127,6 +140,16 @@ export const Desktop = ({ onOpenApp }: DesktopProps) => {
           </div>
         </div>
       </div>
+
+      {/* Context Menu */}
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          onClose={handleCloseContextMenu}
+          onOpenApp={onOpenApp}
+        />
+      )}
     </div>
   );
 };
