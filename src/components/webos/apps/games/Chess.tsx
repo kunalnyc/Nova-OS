@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { RotateCcw, Clock, User, Bot, Crown } from "lucide-react";
+import { RotateCcw, Clock, User, Bot, Crown, Zap } from "lucide-react";
 
 type PieceType = 'king' | 'queen' | 'rook' | 'bishop' | 'knight' | 'pawn';
 type PieceColor = 'white' | 'black';
@@ -53,9 +53,99 @@ export const Chess = () => {
   const [board, setBoard] = useState<Board>(initialBoard);
   const [currentPlayer, setCurrentPlayer] = useState<PieceColor>('white');
   const [selectedSquare, setSelectedSquare] = useState<[number, number] | null>(null);
-  const [gameMode, setGameMode] = useState<'pvp' | 'ai'>('pvp');
+  const [gameMode, setGameMode] = useState<'pvp' | 'ai'>('ai');
   const [gameStatus, setGameStatus] = useState<'playing' | 'check' | 'checkmate' | 'stalemate'>('playing');
   const [moveHistory, setMoveHistory] = useState<string[]>([]);
+  const [isThinking, setIsThinking] = useState(false);
+
+  // AI Move Logic
+  const getAllValidMoves = (board: Board, color: PieceColor): Array<{from: [number, number], to: [number, number], piece: ChessPiece}> => {
+    const moves: Array<{from: [number, number], to: [number, number], piece: ChessPiece}> = [];
+    
+    for (let fromRow = 0; fromRow < 8; fromRow++) {
+      for (let fromCol = 0; fromCol < 8; fromCol++) {
+        const piece = board[fromRow][fromCol];
+        if (piece && piece.color === color) {
+          for (let toRow = 0; toRow < 8; toRow++) {
+            for (let toCol = 0; toCol < 8; toCol++) {
+              if (isValidMove(fromRow, fromCol, toRow, toCol)) {
+                moves.push({
+                  from: [fromRow, fromCol],
+                  to: [toRow, toCol],
+                  piece
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+    return moves;
+  };
+
+  const evaluateBoard = (board: Board): number => {
+    const pieceValues = {
+      pawn: 1,
+      knight: 3,
+      bishop: 3,
+      rook: 5,
+      queen: 9,
+      king: 0
+    };
+
+    let score = 0;
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const piece = board[row][col];
+        if (piece) {
+          const value = pieceValues[piece.type];
+          score += piece.color === 'white' ? value : -value;
+        }
+      }
+    }
+    return score;
+  };
+
+  const makeAIMove = () => {
+    if (currentPlayer !== 'black' || gameMode !== 'ai') return;
+    
+    setIsThinking(true);
+    
+    setTimeout(() => {
+      const validMoves = getAllValidMoves(board, 'black');
+      if (validMoves.length === 0) {
+        setIsThinking(false);
+        return;
+      }
+
+      // Simple AI: Random move with slight preference for captures
+      const captureMoves = validMoves.filter(move => 
+        board[move.to[0]][move.to[1]] !== null
+      );
+      
+      const selectedMove = captureMoves.length > 0 && Math.random() > 0.3 
+        ? captureMoves[Math.floor(Math.random() * captureMoves.length)]
+        : validMoves[Math.floor(Math.random() * validMoves.length)];
+      
+      const newBoard = board.map(row => [...row]);
+      newBoard[selectedMove.to[0]][selectedMove.to[1]] = selectedMove.piece;
+      newBoard[selectedMove.from[0]][selectedMove.from[1]] = null;
+      
+      setBoard(newBoard);
+      setCurrentPlayer('white');
+      setIsThinking(false);
+      
+      // Add move to history
+      const move = `${selectedMove.piece.type}${String.fromCharCode(97 + selectedMove.from[1])}${8 - selectedMove.from[0]} → ${String.fromCharCode(97 + selectedMove.to[1])}${8 - selectedMove.to[0]}`;
+      setMoveHistory(prev => [...prev, `AI: ${move}`]);
+    }, 1000 + Math.random() * 1500); // Random thinking time between 1-2.5 seconds
+  };
+
+  useEffect(() => {
+    if (currentPlayer === 'black' && gameMode === 'ai' && !isThinking) {
+      makeAIMove();
+    }
+  }, [currentPlayer, gameMode, board]);
 
   const resetGame = () => {
     setBoard(initialBoard.map(row => row.map(piece => piece ? { ...piece } : null)));
@@ -63,6 +153,7 @@ export const Chess = () => {
     setSelectedSquare(null);
     setGameStatus('playing');
     setMoveHistory([]);
+    setIsThinking(false);
   };
 
   const isValidMove = (fromRow: number, fromCol: number, toRow: number, toCol: number): boolean => {
@@ -112,6 +203,9 @@ export const Chess = () => {
   };
 
   const handleSquareClick = (row: number, col: number) => {
+    // Prevent moves during AI thinking or if it's AI's turn
+    if (isThinking || (gameMode === 'ai' && currentPlayer === 'black')) return;
+    
     if (selectedSquare) {
       const [fromRow, fromCol] = selectedSquare;
       
@@ -147,17 +241,35 @@ export const Chess = () => {
   const getSquareClassName = (row: number, col: number) => {
     const isLight = (row + col) % 2 === 0;
     const isSelected = selectedSquare && selectedSquare[0] === row && selectedSquare[1] === col;
+    const piece = board[row][col];
     
-    let className = "w-12 h-12 flex items-center justify-center text-2xl cursor-pointer transition-all duration-200 ";
+    let className = "w-12 h-12 flex items-center justify-center text-2xl cursor-pointer transition-all duration-200 relative ";
     
     if (isLight) {
-      className += "bg-amber-100 hover:bg-amber-200 ";
+      className += "bg-amber-50 hover:bg-amber-100 ";
     } else {
-      className += "bg-amber-800 hover:bg-amber-700 ";
+      className += "bg-amber-900 hover:bg-amber-800 ";
     }
     
     if (isSelected) {
       className += "ring-4 ring-primary glow-primary ";
+    }
+    
+    // Add visual feedback for AI thinking
+    if (isThinking && piece && piece.color === 'black') {
+      className += "animate-pulse ";
+    }
+    
+    return className;
+  };
+
+  const getPieceClassName = (piece: ChessPiece) => {
+    let className = "select-none animate-scale-in ";
+    
+    if (piece.color === 'white') {
+      className += "text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] ";
+    } else {
+      className += "text-black drop-shadow-[0_1px_1px_rgba(255,255,255,0.8)] ";
     }
     
     return className;
@@ -176,25 +288,26 @@ export const Chess = () => {
               <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${currentPlayer === 'white' ? 'bg-primary/20 text-primary' : 'bg-muted'}`}>
                 <User className="w-4 h-4" />
                 <span>White</span>
-                {currentPlayer === 'white' && <Crown className="w-4 h-4" />}
+                {currentPlayer === 'white' && !isThinking && <Crown className="w-4 h-4" />}
               </div>
               <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${currentPlayer === 'black' ? 'bg-primary/20 text-primary' : 'bg-muted'}`}>
                 {gameMode === 'ai' ? <Bot className="w-4 h-4" /> : <User className="w-4 h-4" />}
-                <span>Black</span>
-                {currentPlayer === 'black' && <Crown className="w-4 h-4" />}
+                <span>Black {gameMode === 'ai' ? '(AI)' : ''}</span>
+                {currentPlayer === 'black' && !isThinking && <Crown className="w-4 h-4" />}
+                {isThinking && <Zap className="w-4 h-4 animate-pulse text-amber-500" />}
               </div>
             </div>
             
             <Badge variant="outline" className="mb-2">
               <Clock className="w-4 h-4 mr-2" />
-              Turn: {currentPlayer}
+              {isThinking ? 'AI is thinking...' : `Turn: ${currentPlayer}`}
             </Badge>
           </div>
         </div>
 
         {/* Chess Board */}
         <div className="glass rounded-xl p-4 mb-4">
-          <div className="grid grid-cols-8 border-2 border-amber-900 rounded-lg overflow-hidden">
+          <div className="grid grid-cols-8 border-2 border-amber-900 rounded-lg overflow-hidden shadow-lg">
             {board.map((row, rowIndex) => 
               row.map((piece, colIndex) => (
                 <div
@@ -203,7 +316,7 @@ export const Chess = () => {
                   onClick={() => handleSquareClick(rowIndex, colIndex)}
                 >
                   {piece && (
-                    <span className="select-none animate-scale-in">
+                    <span className={getPieceClassName(piece)}>
                       {pieceUnicode[piece.color][piece.type]}
                     </span>
                   )}
@@ -227,8 +340,14 @@ export const Chess = () => {
           </Button>
           
           <Button 
-            onClick={() => setGameMode(gameMode === 'pvp' ? 'ai' : 'pvp')}
+            onClick={() => {
+              if (!isThinking) {
+                setGameMode(gameMode === 'pvp' ? 'ai' : 'pvp');
+                resetGame();
+              }
+            }}
             variant="ghost"
+            disabled={isThinking}
           >
             {gameMode === 'pvp' ? <User className="w-4 h-4 mr-2" /> : <Bot className="w-4 h-4 mr-2" />}
             {gameMode === 'pvp' ? 'Player vs Player' : 'Player vs AI'}
