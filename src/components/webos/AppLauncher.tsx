@@ -18,7 +18,8 @@ import {
   Gamepad2,
   Code,
   Terminal as TerminalIcon,
-  CloudSun
+  CloudSun,
+  Store
 } from "lucide-react";
 import { FileManager } from "./apps/FileManager";
 import { TextEditor } from "./apps/TextEditor";
@@ -30,6 +31,9 @@ import { Terminal } from "./apps/Terminal";
 import { PhotoGallery } from "./apps/PhotoGallery";
 import { WeatherApp } from "./apps/WeatherApp";
 import { CodeEditor } from "./apps/CodeEditor";
+import { NovaStore } from "./apps/NovaStore";
+import { TicTacToe } from "./apps/games/TicTacToe";
+import { Chess } from "./apps/games/Chess";
 
 interface AppLauncherProps {
   onClose: () => void;
@@ -130,9 +134,30 @@ const allApps = [
     component: WeatherApp,
     category: "Utilities",
   },
+  {
+    id: "nova-store",
+    name: "Nova Store",
+    icon: Store,
+    component: NovaStore,
+    category: "System",
+  },
+  {
+    id: "tic-tac-toe",
+    name: "Tic Tac Toe",
+    icon: Gamepad2,
+    component: TicTacToe,
+    category: "Games",
+  },
+  {
+    id: "chess",
+    name: "Chess",
+    icon: Gamepad2,
+    component: Chess,
+    category: "Games",
+  },
 ];
 
-const categories = ["All", "System", "Productivity", "Internet", "Media", "Utilities", "Development"];
+const categories = ["All", "System", "Productivity", "Internet", "Media", "Utilities", "Development", "Games"];
 
 export const AppLauncher = ({ onClose, onOpenApp, onShutdown }: AppLauncherProps) => {
   const [searchQuery, setSearchQuery] = useState("");
