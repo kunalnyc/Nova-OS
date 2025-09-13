@@ -19,7 +19,8 @@ import {
   Code,
   Terminal as TerminalIcon,
   CloudSun,
-  Store
+  Store,
+  Play
 } from "lucide-react";
 import { FileManager } from "./apps/FileManager";
 import { TextEditor } from "./apps/TextEditor";
@@ -34,6 +35,7 @@ import { CodeEditor } from "./apps/CodeEditor";
 import { NovaStore } from "./apps/NovaStore";
 import { TicTacToe } from "./apps/games/TicTacToe";
 import { Chess } from "./apps/games/Chess";
+import StreamingApp from "./apps/StreamingApp";
 
 interface AppLauncherProps {
   onClose: () => void;
@@ -154,6 +156,13 @@ const allApps = [
     icon: Gamepad2,
     component: Chess,
     category: "Games",
+  },
+  {
+    id: "novaflix",
+    name: "NovaFlix",
+    icon: Play,
+    component: StreamingApp,
+    category: "Media",
   },
 ];
 
