@@ -20,7 +20,9 @@ import {
   Terminal as TerminalIcon,
   CloudSun,
   Store,
-  Play
+  Play,
+  Activity,
+  StickyNote
 } from "lucide-react";
 import { FileManager } from "./apps/FileManager";
 import { TextEditor } from "./apps/TextEditor";
@@ -36,6 +38,10 @@ import { NovaStore } from "./apps/NovaStore";
 import { TicTacToe } from "./apps/games/TicTacToe";
 import { Chess } from "./apps/games/Chess";
 import StreamingApp from "./apps/StreamingApp";
+import { MusicPlayer } from "./apps/MusicPlayer";
+import { SystemMonitor } from "./apps/SystemMonitor";
+import { NotesApp } from "./apps/NotesApp";
+import { EmailClient } from "./apps/EmailClient";
 
 interface AppLauncherProps {
   onClose: () => void;
@@ -98,7 +104,7 @@ const allApps = [
     id: "music",
     name: "Music",
     icon: Music,
-    component: () => <div className="p-4">Music Player Coming Soon...</div>,
+    component: MusicPlayer,
     category: "Media",
   },
   {
@@ -112,7 +118,7 @@ const allApps = [
     id: "mail",
     name: "Mail",
     icon: Mail,
-    component: () => <div className="p-4">Mail App Coming Soon...</div>,
+    component: EmailClient,
     category: "Internet",
   },
   {
@@ -163,6 +169,20 @@ const allApps = [
     icon: Play,
     component: StreamingApp,
     category: "Media",
+  },
+  {
+    id: "system-monitor",
+    name: "System Monitor",
+    icon: Activity,
+    component: SystemMonitor,
+    category: "System",
+  },
+  {
+    id: "notes",
+    name: "Notes",
+    icon: StickyNote,
+    component: NotesApp,
+    category: "Productivity",
   },
 ];
 
